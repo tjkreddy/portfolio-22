@@ -1,0 +1,9 @@
+# Ignore the compiled binary (you only want the source code on GitHub)
+portfolio
+portfolio.exe
+
+# Ignore environment variables or secrets
+.env
+
+# Ignore vim swap files
+*.swp
