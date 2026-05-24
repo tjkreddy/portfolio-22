@@ -17,12 +17,6 @@ Instead of hosting a traditional web-based resume, this application allows users
 * Styling: Lip Gloss
 * SSH Server: Wish
 
-## Featured Projects Included
-
-* EatWise: Smart kitchen and pantry management system.
-* Mahindra University Placement Portal: Scalable recruitment platform utilizing monorepo architecture.
-* Event Horizon: Custom gravity physics simulation engine built in Go.
-
 ## Running Locally
 
 Currently, the application runs as a local terminal UI. 
@@ -36,6 +30,9 @@ Currently, the application runs as a local terminal UI.
 
 3. Run the application:
    go run main.go
+
+4. In another terminal run:
+   ssh localhost -p 2222
 
 ## About the Author
 
