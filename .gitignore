@@ -7,3 +7,8 @@ portfolio.exe
 
 # Ignore vim swap files
 *.swp
+
+# Ignore the Bash Script
+.script.sh
+
+
