@@ -9,6 +9,6 @@ portfolio.exe
 *.swp
 
 # Ignore the Bash Script
-.script.sh
+script.sh
 
 
