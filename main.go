@@ -1,11 +1,24 @@
 package main
 
 import (
+    "context"
+	"errors"
 	"fmt"
 	"log"
+	"net"
+	"os"
+	"os/signal"
+	"syscall"
+	"time"
+
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/charmbracelet/ssh"
+	"github.com/charmbracelet/wish"
+	bm "github.com/charmbracelet/wish/bubbletea"
+	lm "github.com/charmbracelet/wish/logging"
 )
+
 
 type Project struct {
     title string
@@ -17,6 +30,8 @@ type model struct {
     projects []Project
     cursor int
     showDetails bool
+    width int
+    height int
 }
 
 var (
@@ -65,6 +80,10 @@ func (m model) Init() tea.Cmd {
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd){
 
     switch msg := msg.(type) {
+        case tea.WindowSizeMsg:
+            m.width = msg.Width
+            m.height = msg.Height
+
         case tea.KeyMsg:
             switch msg.String(){
                 case "ctrl+c", "q":
@@ -97,44 +116,82 @@ func (m model) View() string {
 		desc := descriptionStyle.Render(descText)
 		help := helpStyle.Render("Press 'b' or 'esc' to go back, 'q' to quit.")
 
-		// Join them together with newlines
-		ui := lipgloss.JoinVertical(lipgloss.Left, title, desc, help)
-		
-		// Wrap the whole thing in the main app layout
-		return appStyle.Render(ui)
-	}
+	// Join them together with newlines
+		return lipgloss.Place(
+			m.width,
+			m.height,
+			lipgloss.Center,
+			lipgloss.Center,
+			appStyle.Render(lipgloss.JoinVertical(lipgloss.Left, title, desc, help)),
+		)
+	} else {
+		// 2. We are in the Main Menu
+		menuText := "My Projects:\n\n"
+		for i, project := range m.projects {
+			cursor := " " // no cursor
+			renderedChoice := itemStyle.Render(project.title)
 
-	// 2. We are in the Main Menu
-	menuText := "My Projects:\n\n"
-	for i, project := range m.projects {
-		cursor := " " // no cursor
-		renderedChoice := itemStyle.Render(project.title)
-
-		if m.cursor == i {
-			cursor = ">" // cursor!
-			renderedChoice = selectedItemStyle.Render(project.title)
+			if m.cursor == i {
+				cursor = ">" // cursor!
+				renderedChoice = selectedItemStyle.Render(project.title)
+			}
+			menuText += fmt.Sprintf("%s %s\n", cursor, renderedChoice)
 		}
-		menuText += fmt.Sprintf("%s %s\n", cursor, renderedChoice)
-	}
 
-	help := helpStyle.Render("\nPress Enter to view, Up/Down to navigate, 'q' to quit.")
-	ui := lipgloss.JoinVertical(lipgloss.Left, menuText, help)
-	
-	return appStyle.Render(ui)
+		help := helpStyle.Render("\nPress Enter to view, Up/Down to navigate, 'q' to quit.")
+		return lipgloss.Place(
+			m.width,
+			m.height,
+			lipgloss.Center,
+			lipgloss.Center,
+			appStyle.Render(lipgloss.JoinVertical(lipgloss.Left, menuText, help)),
+		)
+	}
 }
 
+func teaHandler(s ssh.Session) (tea.Model, []tea.ProgramOption){
+    return model{projects: []Project{
+           {title: "EatWise", Description: "Smart kitchen and pantry management system.\n\nTech Stack: Next.js, Go, PostgreSQL."}    ,
+               {title: "Placement Portal", Description: "Mahindra University scalable recruitment platform utilizing monorepo architecture."},
+               {title: "Event Horizon", Description: "Custom gravity physics simulation engine built entirely in Go."},
+               {title: "Contact", Description: "Contact me at: tjkreddy@example.com\nGitHub: github.com/tjkreddy"},
+           },
+       cursor: 0,
+    }, []tea.ProgramOption{tea.WithAltScreen()}
+}
 
-func main() {
-	p := tea.NewProgram(model{
-    projects: []Project{
-        {title: "EatWise", Description: "Smart kitchen and pantry management system.\n\nTech Stack: Next.js, Go, PostgreSQL."},
-			{title: "Placement Portal", Description: "Mahindra University scalable recruitment platform utilizing monorepo architecture."},
-			{title: "Event Horizon", Description: "Custom gravity physics simulation engine built entirely in Go."},
-			{title: "Contact", Description: "Contact me at: tjkreddy@example.com\nGitHub: github.com/tjkreddy"},
-		},
-    cursor: 0,
-    })
-	if _, err := p.Run(); err != nil {
-		log.Fatal(err)
+    func main() {
+	// 1. Configure the SSH Server
+	s, err := wish.NewServer(
+		wish.WithAddress(net.JoinHostPort("localhost", "2222")),
+		wish.WithHostKeyPath(".ssh/term_info_ed25519"), // Generates a secure key for the server
+		wish.WithMiddleware(
+			bm.Middleware(teaHandler), // This tells the server: "When someone connects, run teaHandler!"
+			lm.Middleware(),           // This logs who connects to your terminal
+		),
+	)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	// 2. Set up a way to safely shut down the server when you press Ctrl+C
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	log.Printf("Starting SSH portfolio server on localhost:2222")
+
+	// 3. Start the server in the background (a goroutine)
+	go func() {
+		if err = s.ListenAndServe(); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
+			log.Fatalln(err)
+		}
+	}()
+
+	// 4. Wait here forever until someone presses Ctrl+C
+	<-done
+	log.Println("\nStopping SSH server")
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
+	if err := s.Shutdown(ctx); err != nil && !errors.Is(err, ssh.ErrServerClosed) {
+		log.Fatalln(err)
 	}
 }
