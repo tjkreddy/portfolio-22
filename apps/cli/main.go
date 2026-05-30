@@ -51,8 +51,8 @@ type model struct {
 
 var (
 	// The classic terminal green
-	retroGreen = lipgloss.Color("#FF5F87")
-    darkGreen  = lipgloss.Color("#555555") // For less important text
+	retroGreen = lipgloss.Color("#33FF00")
+    darkGreen  = lipgloss.Color("#005500") // For less important text
     
 
 	appStyle = lipgloss.NewStyle().Margin(1, 2)
