@@ -4,7 +4,7 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 
 const chicago = localFont({
-  src: "./fonts/chicagoKare-Regular.woff2",
+  src: "./fonts/ChicagoKare-Regular.woff2",
 });
 
 export const metadata: Metadata = {
