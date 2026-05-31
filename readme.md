@@ -1,41 +1,78 @@
-# portfolio-22
+# Jugal Kishore's Portfolio Monorepo
 
-A high-fidelity, interactive Text User Interface (TUI) portfolio built entirely in Go. 
+Welcome to the central repository for my personal portfolio. To reflect my dual focus on human-centered UI/UX design and low-level systems engineering, this portfolio is split into two distinct experiences, both powered by a shared architecture.
 
-Instead of hosting a traditional web-based resume, this application allows users, recruiters, and fellow engineers to explore my work by interacting directly with a custom-built CLI application. Ultimately, this will be served over SSH, bypassing the browser entirely.
+**Choose your interface:**
 
-## Key Features
+- **[System 7 OS (Web)](apps/web):** A graphical, high-fidelity retro desktop experience.
+- **[Terminal Portfolio (CLI)](apps/cli):** A fast, keyboard-centric SSH server for those who prefer `tty` over `gui`.
 
-* Interactive Navigation: Fully navigable menus using standard keyboard inputs (Up/Down/Enter) or Vim-style bindings (j/k) to explore projects, technical skills, and contact information.
-* Stateful TUI: Implements the Model-View-Update (MVU) pattern to manage complex UI states, built on The Elm Architecture.
-* Systems-Minded: Designed as a performant, single-binary application demonstrating an understanding of state management and terminal emulation outside the standard web DOM.
+---
 
-## Technical Stack
+## Polyglot Monorepo Architecture
 
-* Language: Go
-* TUI Framework: Bubble Tea
-* Styling: Lip Gloss
-* SSH Server: Wish
+This project is architected as a modern polyglot monorepo to cleanly separate concerns while demonstrating scalable engineering practices across different ecosystems (Node.js and Go).
 
-## Running Locally
+```
+portfolio-22/
+├── Makefile           # Master orchestrator for cross-language startup
+├── apps/
+│   ├── web/           # Next.js System 7 GUI application (TypeScript/React)
+│   └── cli/           # Bubble Tea SSH server application (Go)
+└── packages/          # (Future) Shared configurations and data schemas
+```
 
-Currently, the application runs as a local terminal UI. 
+---
 
-1. Clone the repository:
-   git clone https://github.com/tjkreddy/portfolio-22.git
-   cd portfolio-22
+##  System 7 Portfolio OS (`apps/web`)
 
-2. Install dependencies:
-   go mod tidy
+The graphical interface is a strict adherence to classic human-centered UI/UX principles, specifically reverse-engineered from early 1990s Macintosh operating systems.
 
-3. Run the application:
-   go run main.go
+- Features **Fitts's Law** applications, **1-Bit Architecture**, and **Gestalt Principles**.
+- Built with **Next.js**, **React**, and **Tailwind CSS**.
 
-4. In another terminal run:
-   ssh localhost -p 2222
+ [Read the full Web Documentation](web.md)
 
-## About the Author
+---
 
-Jugal Kishore Reddy Thangella
-* GitHub: @tjkreddy
-* Focus: Backend Systems, Full-Stack Development, CLI Tooling
+##  Terminal Portfolio (`apps/cli`)
+
+The CLI interface is designed for speed and keyboard-first navigation, catering to systems engineers and terminal power users.
+
+- Features a zero-distraction, text-based UI with a **"Green Phosphor"** aesthetic.
+- Served over a custom raw TCP port via SSH, bypassing the browser entirely.
+- Built with **Go**, **Bubble Tea** (MVU pattern), and **Wish** (SSH middleware).
+
+ [Read the full CLI Documentation](cli.md)
+
+---
+
+##  Getting Started
+
+Clone the repository:
+
+```bash
+git clone https://github.com/tjkreddy/portfolio-22.git
+cd portfolio-22
+```
+
+To run both environments simultaneously, use the root orchestrator to spin up the Go server and the Next.js server in parallel:
+
+```bash
+make -j 2 dev
+```
+
+---
+
+##  About the Developer
+
+**Jugal Kishore Reddy Thangella** is a Computer Science student (Mahindra University & University of Florida Exchange) specializing in polyglot monorepos, systems architecture (Golang, C++), and UX engineering.
+
+- 🌐 **Network:** [uni-connect.live](https://uni-connect.live)
+- 🐙 **GitHub:** [@tjkreddy](https://github.com/tjkreddy)
+
+---
+
+## 📄 License
+
+This project is open-sourced under the [MIT License](LICENSE).
