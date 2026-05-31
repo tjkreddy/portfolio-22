@@ -68,9 +68,6 @@ make -j 2 dev
 
 **Jugal Kishore Reddy Thangella** is a Computer Science student (Mahindra University & University of Florida Exchange) specializing in polyglot monorepos, systems architecture (Golang, C++), and UX engineering.
 
-- 🌐 **Network:** [uni-connect.live](https://uni-connect.live)
-- 🐙 **GitHub:** [@tjkreddy](https://github.com/tjkreddy)
-
 ---
 
 ## 📄 License
