@@ -1,26 +1,35 @@
 @import "tailwindcss";
 
+@theme {
+  --background-image-mac-lines: repeating-linear-gradient(
+    to bottom,
+    #000000,
+    #000000 1px,
+    #ffffff 1px,
+    #ffffff 2px
+  );
+}
+
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+  --cursor-arrow: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M0 0V14.5L3.5 11.5L6 16L9.5 14.5L7 10H12L0 0Z' fill='white' stroke='black' stroke-width='1'/%3E%3C/svg%3E"), auto;
+  --cursor-wait: url("data:image/svg+xml,%3Csvg width='16' height='16' viewBox='0 0 16 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Crect x='4' y='2' width='8' height='12' rx='1' fill='white' stroke='black'/%3E%3Ccircle cx='8' cy='8' r='3' fill='white' stroke='black'/%3E%3Cpath d='M8 5V8H10' stroke='black'%3E%3CanimateTransform attributeName='transform' type='rotate' from='0 8 8' to='360 8 8' dur='2s' repeatCount='indefinite'/%3E%3C/path%3E%3Cpath d='M6 2H10M6 14H10' stroke='black'/%3E%3C/svg%3E"), wait;
+  --cursor-text: url("data:image/svg+xml,%3Csvg width='8' height='16' viewBox='0 0 8 16' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4 2V14M1 2H7M1 14H7' stroke='black' stroke-width='1.5'/%3E%3C/svg%3E") 4 8, text;
 }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: #d6d6d6;
+  color: #000000;
+  cursor: var(--cursor-arrow);
+}
+
+.pixelated-avatar {
+  image-rendering: pixelated;
+}
+
+.cursor-wait {
+  cursor: var(--cursor-wait) !important;
+}
+
+.cursor-text {
+  cursor: var(--cursor-text) !important;
 }
